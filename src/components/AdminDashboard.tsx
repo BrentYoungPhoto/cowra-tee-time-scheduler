@@ -25,6 +25,28 @@ import { cn } from '@/lib/utils';
 const AdminDashboard = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [searchTerm, setSearchTerm] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [blockReason, setBlockReason] = useState('');
+
+  // Generate time options for the select dropdowns
+  const generateTimeOptions = () => {
+    const times = [];
+    for (let hour = 6; hour <= 18; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        const display = new Date(`2024-01-01T${time}`).toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        });
+        times.push({ value: time, label: display });
+      }
+    }
+    return times;
+  };
+
+  const timeOptions = generateTimeOptions();
 
   // Mock booking data
   const mockBookings = [
@@ -74,10 +96,39 @@ const AdminDashboard = () => {
 
   // Mock blocked times
   const [blockedTimes, setBlockedTimes] = useState([
-    { date: '2024-01-15', time: '12:00', reason: 'Maintenance' },
-    { date: '2024-01-15', time: '12:15', reason: 'Maintenance' },
-    { date: '2024-01-16', time: '14:00', reason: 'Tournament' }
+    { date: '2024-01-15', startTime: '12:00', endTime: '12:45', reason: 'Maintenance' },
+    { date: '2024-01-16', startTime: '14:00', endTime: '18:00', reason: 'Tournament' },
+    { date: '2024-01-17', startTime: '08:00', endTime: '18:00', reason: 'Full Day Tournament' }
   ]);
+
+  const handleBlockTimeSlot = () => {
+    if (!selectedDate || !startTime || !endTime || !blockReason) {
+      return;
+    }
+
+    const newBlock = {
+      date: selectedDate.toISOString().split('T')[0],
+      startTime,
+      endTime,
+      reason: blockReason
+    };
+
+    setBlockedTimes([...blockedTimes, newBlock]);
+    setStartTime('');
+    setEndTime('');
+    setBlockReason('');
+  };
+
+  const formatTimeRange = (startTime: string, endTime: string) => {
+    const formatTime = (time: string) => {
+      return new Date(`2024-01-01T${time}`).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    };
+    return `${formatTime(startTime)} - ${formatTime(endTime)}`;
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -245,48 +296,77 @@ const AdminDashboard = () => {
                   <CalendarX className="w-5 h-5 mr-2" />
                   Block Time Slots
                 </CardTitle>
-                <CardDescription>Select dates and times to block for maintenance or events</CardDescription>
+                <CardDescription>Select dates and time ranges to block for maintenance or events</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <Label>Select Date</Label>
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    className={cn("rounded-md border pointer-events-auto")}
-                  />
+                  <div className="mt-2">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate}
+                      className={cn("rounded-md border")}
+                      classNames={{
+                        day_selected: "bg-green-600 text-white hover:bg-green-700",
+                        day_today: "bg-green-100 text-green-800 font-semibold",
+                        day: "hover:bg-green-50 transition-colors",
+                      }}
+                    />
+                  </div>
                 </div>
                 
-                <div>
-                  <Label htmlFor="blockTime">Time</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select time to block" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="08:00">8:00 AM</SelectItem>
-                      <SelectItem value="09:00">9:00 AM</SelectItem>
-                      <SelectItem value="10:00">10:00 AM</SelectItem>
-                      <SelectItem value="11:00">11:00 AM</SelectItem>
-                      <SelectItem value="12:00">12:00 PM</SelectItem>
-                      <SelectItem value="13:00">1:00 PM</SelectItem>
-                      <SelectItem value="14:00">2:00 PM</SelectItem>
-                      <SelectItem value="15:00">3:00 PM</SelectItem>
-                      <SelectItem value="16:00">4:00 PM</SelectItem>
-                      <SelectItem value="17:00">5:00 PM</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="startTime">Start Time</Label>
+                    <Select value={startTime} onValueChange={setStartTime}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select start time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {timeOptions.map((time) => (
+                          <SelectItem key={time.value} value={time.value}>
+                            {time.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="endTime">End Time</Label>
+                    <Select value={endTime} onValueChange={setEndTime}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select end time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {timeOptions.map((time) => (
+                          <SelectItem key={time.value} value={time.value}>
+                            {time.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 
                 <div>
                   <Label htmlFor="reason">Reason</Label>
-                  <Input id="reason" placeholder="e.g., Maintenance, Tournament, etc." />
+                  <Input 
+                    id="reason" 
+                    placeholder="e.g., Maintenance, Tournament, etc." 
+                    value={blockReason}
+                    onChange={(e) => setBlockReason(e.target.value)}
+                  />
                 </div>
                 
-                <Button className="w-full bg-red-600 hover:bg-red-700">
+                <Button 
+                  className="w-full bg-red-600 hover:bg-red-700"
+                  onClick={handleBlockTimeSlot}
+                  disabled={!selectedDate || !startTime || !endTime || !blockReason}
+                >
                   <Ban className="w-4 h-4 mr-2" />
-                  Block Time Slot
+                  Block Time Range
                 </Button>
               </CardContent>
             </Card>
@@ -302,7 +382,10 @@ const AdminDashboard = () => {
                     <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                       <div>
                         <p className="font-medium">
-                          {new Date(block.date).toLocaleDateString()} at {block.time}
+                          {new Date(block.date).toLocaleDateString()}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {formatTimeRange(block.startTime, block.endTime)}
                         </p>
                         <p className="text-sm text-gray-600">{block.reason}</p>
                       </div>
