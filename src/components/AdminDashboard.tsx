@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -301,18 +300,20 @@ const AdminDashboard = () => {
               <CardContent className="space-y-4">
                 <div>
                   <Label>Select Date</Label>
-                  <div className="mt-2">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={setSelectedDate}
-                      className={cn("rounded-md border")}
-                      classNames={{
-                        day_selected: "bg-green-600 text-white hover:bg-green-700",
-                        day_today: "bg-green-100 text-green-800 font-semibold",
-                        day: "hover:bg-green-50 transition-colors",
-                      }}
-                    />
+                  <div className="mt-2 relative">
+                    <div className="max-w-fit mx-auto">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                        className={cn("rounded-md border bg-white relative z-auto")}
+                        classNames={{
+                          day_selected: "bg-green-600 text-white hover:bg-green-700",
+                          day_today: "bg-green-100 text-green-800 font-semibold",
+                          day: "hover:bg-green-50 transition-colors",
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
                 
