@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +9,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { CreditCard, Users, Calendar, Clock, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import CartHireOptions from './CartHireOptions';
+import EquipmentHireOptions from './EquipmentHireOptions';
 
 interface BookingFormProps {
   selectedDate: Date | undefined;
@@ -27,7 +28,13 @@ const BookingForm = ({ selectedDate, selectedTime, onComplete, onCancel }: Booki
     contactName: '',
     contactPhone: '',
     contactEmail: '',
-    specialRequests: ''
+    specialRequests: '',
+    cartHire: 'none',
+    equipment: {
+      pullBuggy: 'none',
+      electricBuggy: 'none',
+      hireClubs: 'none'
+    }
   });
 
   const formatTime = (time: string) => {
@@ -50,13 +57,51 @@ const BookingForm = ({ selectedDate, selectedTime, onComplete, onCancel }: Booki
       feePerPlayer = is18Holes ? 55 : 30;
     }
     
-    const totalFee = feePerPlayer * playerCount;
+    const totalGreenFees = feePerPlayer * playerCount;
+    
+    // Calculate additional fees
+    let cartFee = 0;
+    if (formData.cartHire === 'cart') {
+      if (isMember) {
+        cartFee = is18Holes ? 30 : 20;
+      } else {
+        cartFee = is18Holes ? 40 : 30;
+      }
+    }
+    
+    let equipmentFees = 0;
+    if (formData.equipment.pullBuggy === 'pullBuggy') equipmentFees += 5;
+    if (formData.equipment.electricBuggy === 'electricBuggy') equipmentFees += 20;
+    if (formData.equipment.hireClubs === 'standard') {
+      equipmentFees += is18Holes ? 30 : 20;
+    } else if (formData.equipment.hireClubs === 'premium') {
+      equipmentFees += is18Holes ? 40 : 30;
+    }
+    
+    const totalFee = totalGreenFees + cartFee + equipmentFees;
     const deposit = Math.round(totalFee * 0.5); // 50% deposit
     
-    return { totalFee, deposit, feePerPlayer };
+    return { 
+      totalFee, 
+      deposit, 
+      feePerPlayer, 
+      totalGreenFees, 
+      cartFee, 
+      equipmentFees 
+    };
   };
 
-  const { totalFee, deposit, feePerPlayer } = calculateFees();
+  const { totalFee, deposit, feePerPlayer, totalGreenFees, cartFee, equipmentFees } = calculateFees();
+
+  const handleEquipmentChange = (type: string, value: string) => {
+    setFormData({
+      ...formData,
+      equipment: {
+        ...formData.equipment,
+        [type]: value
+      }
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -237,6 +282,22 @@ const BookingForm = ({ selectedDate, selectedTime, onComplete, onCancel }: Booki
           </Card>
         </div>
 
+        {/* Cart Hire and Equipment Options */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <CartHireOptions 
+            playerType={formData.playerType}
+            holes={formData.holes}
+            cartHire={formData.cartHire}
+            onCartHireChange={(value) => setFormData({...formData, cartHire: value})}
+          />
+          
+          <EquipmentHireOptions 
+            holes={formData.holes}
+            equipment={formData.equipment}
+            onEquipmentChange={handleEquipmentChange}
+          />
+        </div>
+
         {/* Booking Summary & Payment */}
         <Card className="shadow-lg border-0">
           <CardHeader className="bg-green-600 text-white rounded-t-lg">
@@ -279,12 +340,25 @@ const BookingForm = ({ selectedDate, selectedTime, onComplete, onCancel }: Booki
                 <h4 className="font-semibold text-lg">Payment Summary</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>Green Fee per Player:</span>
-                    <span className="font-medium">${feePerPlayer}</span>
+                    <span>Green Fees ({formData.players} players):</span>
+                    <span className="font-medium">${totalGreenFees}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Total Green Fees:</span>
-                    <span className="font-medium">${totalFee}</span>
+                  {cartFee > 0 && (
+                    <div className="flex justify-between">
+                      <span>Cart Hire:</span>
+                      <span className="font-medium">${cartFee}</span>
+                    </div>
+                  )}
+                  {equipmentFees > 0 && (
+                    <div className="flex justify-between">
+                      <span>Equipment Hire:</span>
+                      <span className="font-medium">${equipmentFees}</span>
+                    </div>
+                  )}
+                  <Separator />
+                  <div className="flex justify-between text-base font-semibold">
+                    <span>Total:</span>
+                    <span>${totalFee}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between text-lg font-semibold text-green-600">
