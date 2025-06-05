@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Calendar, Clock, Users, MapPin, Phone, Mail } from 'lucide-react';
 import BookingCalendar from '@/components/BookingCalendar';
@@ -44,11 +43,11 @@ const Index = () => {
               <div className="text-right hidden sm:block">
                 <p className="text-sm text-gray-600 flex items-center">
                   <MapPin className="w-4 h-4 mr-1" />
-                  123 Golf Course Road, Cowra NSW
+                  Mees St, Cowra, NSW
                 </p>
                 <p className="text-sm text-gray-600 flex items-center">
                   <Phone className="w-4 h-4 mr-1" />
-                  (02) 6341 1234
+                  (02) 6342 1211
                 </p>
               </div>
               <Button 
@@ -192,11 +191,11 @@ const Index = () => {
                   <CardContent className="p-6 space-y-3">
                     <div className="flex items-start space-x-2">
                       <MapPin className="w-4 h-4 text-green-600 mt-0.5" />
-                      <span className="text-sm">123 Golf Course Road<br />Cowra NSW 2794</span>
+                      <span className="text-sm">Mees St<br />Cowra NSW 2794</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Phone className="w-4 h-4 text-green-600" />
-                      <span className="text-sm">(02) 6341 1234</span>
+                      <span className="text-sm">(02) 6342 1211</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Mail className="w-4 h-4 text-green-600" />
