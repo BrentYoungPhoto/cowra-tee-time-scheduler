@@ -414,54 +414,122 @@ const AdminDashboard = () => {
                 <Settings className="w-5 h-5 mr-2" />
                 System Settings
               </CardTitle>
-              <CardDescription>Configure booking system settings</CardDescription>
+              <CardDescription>Configure booking system settings and pricing</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h4 className="font-semibold">Booking Settings</h4>
-                  <div>
-                    <Label htmlFor="advanceBooking">Maximum advance booking (days)</Label>
-                    <Input id="advanceBooking" type="number" defaultValue="30" />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-lg">Booking Settings</h4>
+                    <div>
+                      <Label htmlFor="advanceBooking">Maximum advance booking (days)</Label>
+                      <Input id="advanceBooking" type="number" defaultValue="30" />
+                    </div>
+                    <div>
+                      <Label htmlFor="depositPercent">Deposit percentage</Label>
+                      <Input id="depositPercent" type="number" defaultValue="50" />
+                    </div>
+                    <div>
+                      <Label htmlFor="slotDuration">Time slot duration (minutes)</Label>
+                      <Select defaultValue="15">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="10">10 minutes</SelectItem>
+                          <SelectItem value="15">15 minutes</SelectItem>
+                          <SelectItem value="20">20 minutes</SelectItem>
+                          <SelectItem value="30">30 minutes</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="depositPercent">Deposit percentage</Label>
-                    <Input id="depositPercent" type="number" defaultValue="50" />
-                  </div>
-                  <div>
-                    <Label htmlFor="slotDuration">Time slot duration (minutes)</Label>
-                    <Select defaultValue="15">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="10">10 minutes</SelectItem>
-                        <SelectItem value="15">15 minutes</SelectItem>
-                        <SelectItem value="20">20 minutes</SelectItem>
-                        <SelectItem value="30">30 minutes</SelectItem>
-                      </SelectContent>
-                    </Select>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-lg">Green Fees</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label htmlFor="visitor18">18 Hole Visitor</Label>
+                        <Input id="visitor18" type="number" defaultValue="40" />
+                      </div>
+                      <div>
+                        <Label htmlFor="visitor9">9 Hole Visitor</Label>
+                        <Input id="visitor9" type="number" defaultValue="25" />
+                      </div>
+                      <div>
+                        <Label htmlFor="junior18">18 Hole Junior</Label>
+                        <Input id="junior18" type="number" defaultValue="15" />
+                      </div>
+                      <div>
+                        <Label htmlFor="junior9">9 Hole Junior</Label>
+                        <Input id="junior9" type="number" defaultValue="10" />
+                      </div>
+                      <div>
+                        <Label htmlFor="twilight">Twilight Golf (after 3pm/4pm)</Label>
+                        <Input id="twilight" type="number" defaultValue="15" />
+                      </div>
+                      <div>
+                        <Label htmlFor="reciprocal9">9 Hole Reciprocal</Label>
+                        <Input id="reciprocal9" type="number" defaultValue="15" />
+                      </div>
+                      <div>
+                        <Label htmlFor="reciprocal18">18 Hole Reciprocal</Label>
+                        <Input id="reciprocal18" type="number" defaultValue="20" />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <h4 className="font-semibold">Pricing</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <Label htmlFor="member18">Member 18 holes</Label>
-                      <Input id="member18" type="number" defaultValue="35" />
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-lg">Cart Hire</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label htmlFor="memberCart18">Member 18 Hole</Label>
+                        <Input id="memberCart18" type="number" defaultValue="30" />
+                      </div>
+                      <div>
+                        <Label htmlFor="memberCart9">Member 9 Hole</Label>
+                        <Input id="memberCart9" type="number" defaultValue="20" />
+                      </div>
+                      <div>
+                        <Label htmlFor="visitorCart18">Visitor 18 Hole</Label>
+                        <Input id="visitorCart18" type="number" defaultValue="40" />
+                      </div>
+                      <div>
+                        <Label htmlFor="visitorCart9">Visitor 9 Hole</Label>
+                        <Input id="visitorCart9" type="number" defaultValue="30" />
+                      </div>
                     </div>
-                    <div>
-                      <Label htmlFor="visitor18">Visitor 18 holes</Label>
-                      <Input id="visitor18" type="number" defaultValue="55" />
-                    </div>
-                    <div>
-                      <Label htmlFor="member9">Member 9 holes</Label>
-                      <Input id="member9" type="number" defaultValue="20" />
-                    </div>
-                    <div>
-                      <Label htmlFor="visitor9">Visitor 9 holes</Label>
-                      <Input id="visitor9" type="number" defaultValue="30" />
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-lg">Hire Equipment</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label htmlFor="pullBuggy">Pull Buggy</Label>
+                        <Input id="pullBuggy" type="number" defaultValue="5" />
+                      </div>
+                      <div>
+                        <Label htmlFor="electricBuggy">Electric Buggy</Label>
+                        <Input id="electricBuggy" type="number" defaultValue="20" />
+                      </div>
+                      <div>
+                        <Label htmlFor="hireClubs9Standard">Hire Clubs 9 Holes (Standard)</Label>
+                        <Input id="hireClubs9Standard" type="number" defaultValue="20" />
+                      </div>
+                      <div>
+                        <Label htmlFor="hireClubs9Premium">Hire Clubs 9 Holes (Premium)</Label>
+                        <Input id="hireClubs9Premium" type="number" defaultValue="30" />
+                      </div>
+                      <div>
+                        <Label htmlFor="hireClubs18Standard">Hire Clubs 18 Holes (Standard)</Label>
+                        <Input id="hireClubs18Standard" type="number" defaultValue="30" />
+                      </div>
+                      <div>
+                        <Label htmlFor="hireClubs18Premium">Hire Clubs 18 Holes (Premium)</Label>
+                        <Input id="hireClubs18Premium" type="number" defaultValue="40" />
+                      </div>
                     </div>
                   </div>
                 </div>
